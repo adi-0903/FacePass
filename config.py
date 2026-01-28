@@ -1,5 +1,5 @@
 """
-Configuration settings for Face Authentication Attendance System
+Configuration settings for FacePass
 """
 
 import os

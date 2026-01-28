@@ -1,5 +1,5 @@
 """
-Database models and operations for Face Authentication Attendance System
+Database models and operations for FacePass
 """
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, Boolean, LargeBinary, ForeignKey

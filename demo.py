@@ -1,5 +1,5 @@
 """
-Face Authentication Demo - Standalone Camera Test
+FacePass Demo - Standalone Camera Test
 Run this script to test face detection, recognition, and spoof detection
 without the web interface.
 """
@@ -30,7 +30,7 @@ class DemoApp:
         self._load_known_faces()
         
         # Display settings
-        self.window_name = "Face Authentication Demo"
+        self.window_name = "FacePass Demo"
         self.font = cv2.FONT_HERSHEY_SIMPLEX
         self.info_panel_height = 150
         
@@ -198,7 +198,7 @@ class DemoApp:
     def run(self):
         """Main demo loop"""
         print("\n" + "="*60)
-        print("    FACE AUTHENTICATION ATTENDANCE SYSTEM - DEMO")
+        print("    FACEPASS - DEMO")
         print("="*60)
         print("\nStarting camera...")
         

@@ -1,4 +1,4 @@
-# Face Authentication Attendance System Dependencies
+# FacePass Dependencies
 
 # Core ML/Vision Libraries
 opencv-python>=4.8.0

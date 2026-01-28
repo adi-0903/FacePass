@@ -1,5 +1,5 @@
 /**
- * Face Authentication Attendance System
+ * FacePass
  * Frontend JavaScript Application
  */
 

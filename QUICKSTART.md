@@ -1,4 +1,4 @@
-# Face Authentication Attendance System
+# FacePass
 
 ## Quick Start
 

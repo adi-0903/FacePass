@@ -8,7 +8,7 @@ import os
 
 def main():
     print("="*60)
-    print("  Face Authentication Attendance System - Setup")
+    print("  FacePass - Setup")
     print("="*60)
     print()
     

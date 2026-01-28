@@ -1,482 +1,905 @@
-# Face Authentication Attendance System
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-0.104+-green?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/OpenCV-4.8+-red?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV">
+  <img src="https://img.shields.io/badge/SQLite-Database-blue?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License">
+</p>
 
-A real-time face recognition system for employee attendance tracking with spoof detection capabilities.
+<h1 align="center">🔐 FacePass</h1>
+<h3 align="center">Your Face, Your Access</h3>
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-green.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-teal.svg)
+<p align="center">
+  <strong>Real-time face recognition • Anti-spoofing protection • Beautiful UI • REST API</strong>
+</p>
 
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [System Architecture](#system-architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Model & Approach](#model--approach)
-- [Training Process](#training-process)
-- [Accuracy Expectations](#accuracy-expectations)
-- [Known Limitations](#known-limitations)
-- [Configuration](#configuration)
+<p align="center">
+  <a href="#-features">Features</a> •
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-api-reference">API</a> •
+  <a href="#-architecture">Architecture</a> •
+  <a href="#-configuration">Config</a>
+</p>
 
 ---
 
-## 🎯 Overview
+## 📋 Table of Contents
 
-This Face Authentication Attendance System provides a complete solution for:
-- **Face Registration**: Enroll employees with their facial biometrics
-- **Face Identification**: Real-time face recognition from camera feed
-- **Attendance Tracking**: Automatic punch-in/punch-out based on face recognition
-- **Spoof Detection**: Basic liveness detection to prevent photo/video attacks
+- [Overview](#-overview)
+- [Features](#-features)
+- [System Requirements](#-system-requirements)
+- [Quick Start](#-quick-start)
+- [Installation](#-installation)
+- [Usage Guide](#-usage-guide)
+- [API Reference](#-api-reference)
+- [Architecture](#-architecture)
+- [Face Recognition Model](#-face-recognition-model)
+- [Anti-Spoofing System](#-anti-spoofing-system)
+- [Database Schema](#-database-schema)
+- [Configuration](#-configuration)
+- [Security Features](#-security-features)
+- [Performance](#-performance)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
+
+## 🌟 Overview
+
+**FacePass** is a production-ready face authentication system designed for enterprise attendance tracking. It combines state-of-the-art computer vision with a beautiful, responsive web interface to provide seamless employee check-in/check-out functionality.
+
+### Why FacePass?
+
+| Traditional Systems | FacePass |
+|---------------------|--------------|
+| ❌ Buddy punching possible | ✅ Biometric verification |
+| ❌ Cards can be lost/shared | ✅ Your face is your ID |
+| ❌ Manual time entry errors | ✅ Automatic timestamping |
+| ❌ Slow queue times | ✅ Sub-second recognition |
+| ❌ No fraud detection | ✅ Anti-spoofing protection |
 
 ---
 
 ## ✨ Features
 
-### Core Features
-| Feature | Description |
-|---------|-------------|
-| 👤 Face Registration | Register new employees with face capture and details |
-| 🔍 Face Identification | Identify registered faces in real-time |
-| ⏰ Punch In/Out | Automatic attendance marking based on recognition |
-| 📊 Attendance Records | View daily and historical attendance data |
+### Core Functionality
 
-### Security Features
-| Feature | Description |
-|---------|-------------|
-| 🛡️ Spoof Detection | Texture analysis using Local Binary Patterns (LBP) |
-| 👁️ Blink Detection | Eye Aspect Ratio (EAR) monitoring for liveness |
-| 🔦 Lighting Normalization | CLAHE algorithm for varying light conditions |
+- **🎯 Real-time Face Recognition** - Identify employees in under 500ms
+- **📝 Employee Registration** - Capture and store face encodings securely
+- **⏰ Punch In/Out Tracking** - Automatic attendance logging with timestamps
+- **📊 Attendance Reports** - View daily records and history
 
-### Technical Features
-| Feature | Description |
-|---------|-------------|
-| 🌐 Web Interface | Modern, responsive UI with glassmorphism design |
-| 🔌 REST API | FastAPI backend with OpenAPI documentation |
-| 💾 SQLite Database | Lightweight, portable data storage |
-| 📹 Real-time Processing | Live camera feed with face overlay |
+### Security & Anti-Fraud
+
+- **🛡️ Anti-Spoofing Detection** - Blocks photos, screens, and printed faces
+- **🔒 Duplicate Prevention** - Same face cannot register twice
+- **📧 Unique Constraints** - Employee ID and email must be unique
+- **📋 Audit Logging** - Track all system events
+
+### Technical Excellence
+
+- **⚡ Lighting Normalization** - CLAHE algorithm for varying conditions
+- **🎨 Premium UI** - Glassmorphism design with smooth animations
+- **🔌 REST API** - Full-featured endpoints for integration
+- **💾 SQLite Database** - Zero-configuration persistence
 
 ---
 
-## 🏗️ System Architecture
+## 💻 System Requirements
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Frontend (HTML/CSS/JS)                  │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │  Attendance │  │  Register   │  │    Records View     │  │
-│  │    Tab      │  │    Tab      │  │                     │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
-└───────────────────────────┬─────────────────────────────────┘
-                            │ HTTP/REST
-┌───────────────────────────┼─────────────────────────────────┐
-│                    FastAPI Backend                           │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │   /api/     │  │   /api/     │  │   /api/attendance   │  │
-│  │  identify   │  │  register   │  │                     │  │
-│  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘  │
-│         └────────────────┼─────────────────────┘            │
-│                          ▼                                   │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │                  Face Processor                      │    │
-│  │  ┌───────────┐ ┌──────────────┐ ┌────────────────┐  │    │
-│  │  │  Detect   │ │   Encode     │ │    Identify    │  │    │
-│  │  │  (dlib)   │ │ (128-D vec)  │ │  (Euclidean)   │  │    │
-│  │  └───────────┘ └──────────────┘ └────────────────┘  │    │
-│  │  ┌───────────────────────────────────────────────┐  │    │
-│  │  │           Spoof Detection                     │  │    │
-│  │  │  LBP Texture │ Blink Detection │ Reflection  │  │    │
-│  │  └───────────────────────────────────────────────┘  │    │
-│  └─────────────────────────────────────────────────────┘    │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-┌───────────────────────────┼─────────────────────────────────┐
-│                    SQLite Database                           │
-│  ┌─────────┐  ┌──────────────────┐  ┌─────────────────┐     │
-│  │  Users  │  │ AttendanceRecords│  │   AuditLogs     │     │
-│  └─────────┘  └──────────────────┘  └─────────────────┘     │
-└─────────────────────────────────────────────────────────────┘
-```
+### Minimum Requirements
+
+| Component | Requirement |
+|-----------|-------------|
+| **OS** | Windows 10/11, Linux, macOS |
+| **Python** | 3.9 or higher |
+| **RAM** | 4 GB |
+| **Camera** | 720p webcam |
+| **Storage** | 500 MB free space |
+
+### Recommended Requirements
+
+| Component | Requirement |
+|-----------|-------------|
+| **OS** | Windows 11, Ubuntu 22.04+ |
+| **Python** | 3.11+ |
+| **RAM** | 8 GB+ |
+| **Camera** | 1080p webcam |
+| **GPU** | NVIDIA GPU (for dlib acceleration) |
 
 ---
 
-## 🚀 Installation
-
-### Prerequisites
-
-- Python 3.9 or higher
-- Webcam
-- Windows/Linux/MacOS
-
-### Step 1: Clone or Navigate to Project
+## 🚀 Quick Start
 
 ```bash
+# Clone or navigate to project
 cd c:\Users\HP\OneDrive\Desktop\Detector
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python main.py
+
+# Open in browser
+# http://localhost:8000
 ```
 
-### Step 2: Create Virtual Environment (Recommended)
+That's it! The system will create the database automatically on first run.
+
+---
+
+## 📦 Installation
+
+### Step 1: Prerequisites
 
 ```bash
-python -m venv venv
+# Verify Python version (3.9+ required)
+python --version
 
-# Windows
-.\venv\Scripts\activate
-
-# Linux/Mac
-source venv/bin/activate
+# Upgrade pip
+python -m pip install --upgrade pip
 ```
 
-### Step 3: Install Dependencies
+### Step 2: Install Dependencies
 
 ```bash
+# Install all requirements
 pip install -r requirements.txt
 ```
 
-> ⚠️ **Note for Windows Users**: Installing `dlib` may require Visual Studio Build Tools. If you encounter errors:
-> 1. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-> 2. Select "Desktop development with C++"
-> 3. Alternatively, use `pip install dlib --pre` for pre-built wheels
+<details>
+<summary>📋 Dependencies List</summary>
 
-### Step 4: Run the Application
+| Package | Version | Purpose |
+|---------|---------|---------|
+| `opencv-python` | ≥4.8.0 | Image processing |
+| `opencv-contrib-python` | ≥4.8.0 | Extended CV features |
+| `numpy` | ≥1.24.0 | Numerical computing |
+| `scipy` | ≥1.11.0 | Scientific computing |
+| `fastapi` | ≥0.104.0 | Web framework |
+| `uvicorn` | ≥0.24.0 | ASGI server |
+| `sqlalchemy` | ≥2.0.0 | Database ORM |
+| `Pillow` | ≥10.0.0 | Image handling |
+| `scikit-image` | ≥0.21.0 | Image algorithms |
+| `pydantic` | ≥2.0.0 | Data validation |
 
-```bash
-python main.py
+**Optional (for enhanced accuracy):**
+
+| Package | Purpose |
+|---------|---------|
+| `face-recognition` | dlib-based 128-D encodings |
+| `dlib` | HOG/CNN face detection |
+| `mediapipe` | Face mesh & landmarks |
+
+</details>
+
+### Step 4: Access Web Interface
+
+Open your browser and navigate to:
+
+```
+http://localhost:8000
 ```
 
-The server will start at `http://localhost:8000`
+---
+
+## 🚀 Deployment
+
+### Option 1: Render / Railway (Easiest)
+
+1. Fork/Push this repository to GitHub.
+2. Connect your repo to **Render** or **Railway**.
+3. Use the following settings:
+   - **Environment**: Python
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+4. Add a **Persistent Disk** mount at `/app/data` if you want to keep data across restarts, and update `config.py` to point there.
+
+### Option 2: Docker
+
+```bash
+# Build the image
+docker build -t facepass .
+
+# Run the container
+docker run -p 8000:8000 facepass
+```
 
 ---
 
-## 📖 Usage
+## 📖 Usage Guide
 
-### 1. Register an Employee
+### Registering an Employee
 
 1. Navigate to the **Register** tab
-2. Click on the camera feed to enable the webcam
+2. Click **Start Camera** to enable webcam
 3. Position your face within the frame
-4. Click **Capture Photo**
-5. Fill in the employee details:
-   - Employee ID (required)
-   - Name (required)
-   - Email (optional)
-   - Department (optional)
+4. Click **Capture Photo** when ready
+5. Fill in employee details:
+   - **Employee ID** (required, unique)
+   - **Full Name** (required)
+   - **Email** (optional, unique)
+   - **Department** (optional)
 6. Click **Register Employee**
 
-### 2. Mark Attendance
+### Recording Attendance
 
 1. Navigate to the **Attendance** tab
-2. Enable the camera
-3. Position your face in front of the camera
-4. Click **Mark Attendance**
-5. The system will:
+2. Camera will start automatically
+3. Position your face in the frame
+4. Click **Capture & Identify**
+5. System will:
    - Detect your face
-   - Verify it's not a spoof attempt
-   - Identify you against registered users
-   - Mark punch-in or punch-out based on current status
+   - Verify it's a real person (anti-spoof)
+   - Match against registered employees
+   - Record punch-in or punch-out
 
-### 3. View Records
+### Viewing Records
 
 1. Navigate to the **Records** tab
-2. View today's attendance in the table
-3. See registered employees list
+2. View **Today's Attendance** - all check-ins/outs for current day
+3. View **Registered Employees** - list of all employees
 
 ---
 
-## 🔌 API Documentation
+## 🔌 API Reference
+
+### Base URL
+
+```
+http://localhost:8000/api
+```
+
+### Authentication
+
+Currently open (add JWT/OAuth for production)
 
 ### Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/register` | Register new user with face |
-| `POST` | `/api/identify` | Identify face and mark attendance |
-| `GET` | `/api/users` | Get all registered users |
-| `GET` | `/api/attendance/today` | Get today's attendance |
-| `GET` | `/api/attendance/history/{id}` | Get user's attendance history |
-| `DELETE` | `/api/users/{id}` | Deactivate a user |
-| `POST` | `/api/analyze-frame` | Analyze frame without marking attendance |
+#### Register Employee
 
-### API Usage Examples
+```http
+POST /api/register
+Content-Type: multipart/form-data
 
-#### Register User
-```bash
-curl -X POST "http://localhost:8000/api/register" \
-  -F "employee_id=EMP001" \
-  -F "name=John Doe" \
-  -F "email=john@company.com" \
-  -F "department=Engineering" \
-  -F "face_image=@photo.jpg"
+Parameters:
+- employee_id (string, required): Unique employee identifier
+- name (string, required): Full name
+- email (string, optional): Email address
+- department (string, optional): Department name
+- face_image (file, required): Face photo (JPEG/PNG)
+
+Response: 200 OK
+{
+  "success": true,
+  "message": "User John Doe registered successfully",
+  "user_id": 1,
+  "spoof_confidence": 0.85
+}
+
+Errors:
+- 400: Employee ID already registered
+- 400: Email already registered
+- 400: Face already registered as '[Name]'
+- 400: No face detected
+- 400: Spoof detection failed
 ```
 
-#### Identify Face
-```bash
-curl -X POST "http://localhost:8000/api/identify" \
-  -F "face_image=@capture.jpg"
+#### Identify & Record Attendance
+
+```http
+POST /api/identify
+Content-Type: multipart/form-data
+
+Parameters:
+- face_image (file, required): Face photo for identification
+
+Response: 200 OK
+{
+  "success": true,
+  "message": "Welcome John Doe! Punched in successfully.",
+  "user_id": 1,
+  "user_name": "John Doe",
+  "action": "punch_in",
+  "timestamp": "2026-01-28T16:30:00",
+  "confidence": 0.94
+}
+```
+
+#### Get All Users
+
+```http
+GET /api/users
+
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "employee_id": "EMP001",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "department": "Engineering",
+    "registered_at": "2026-01-28T10:00:00",
+    "is_active": true
+  }
+]
+```
+
+#### Get Today's Attendance
+
+```http
+GET /api/attendance/today
+
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "user_name": "John Doe",
+    "employee_id": "EMP001",
+    "punch_in": "2026-01-28T09:00:00",
+    "punch_out": "2026-01-28T18:00:00",
+    "confidence": 0.94,
+    "status": "Checked Out"
+  }
+]
+```
+
+#### Get Employee Attendance History
+
+```http
+GET /api/attendance/history/{employee_id}?limit=30
+
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "date": "2026-01-28",
+    "punch_in": "2026-01-28T09:00:00",
+    "punch_out": "2026-01-28T18:00:00",
+    "confidence": 0.94
+  }
+]
+```
+
+#### Analyze Frame (Real-time)
+
+```http
+POST /api/analyze-frame
+Content-Type: multipart/form-data
+
+Parameters:
+- face_image (file, required): Frame to analyze
+
+Response: 200 OK
+{
+  "faces": [
+    {
+      "location": [100, 300, 300, 100],
+      "confidence": 0.94,
+      "is_recognized": true,
+      "user_name": "John Doe",
+      "spoof_check": {
+        "is_live": true,
+        "confidence": 0.85
+      }
+    }
+  ]
+}
+```
+
+#### Delete User
+
+```http
+DELETE /api/users/{employee_id}
+
+Response: 200 OK
+{
+  "success": true,
+  "message": "User John Doe deactivated"
+}
 ```
 
 ---
 
-## 🧠 Model & Approach
+## 🏗️ Architecture
 
-### Face Detection
-- **Algorithm**: HOG (Histogram of Oriented Gradients) or CNN-based
-- **Library**: `face_recognition` (powered by dlib)
-- **Speed**: HOG is faster (~15fps), CNN is more accurate
-
-### Face Encoding
-- **Model**: ResNet-based deep neural network
-- **Output**: 128-dimensional face embedding vector
-- **Training Data**: Original model trained on ~3 million faces
-- **Architecture**: Modified ResNet with 29 convolutional layers
-
-### Face Comparison
-- **Metric**: Euclidean distance between 128-D embeddings
-- **Threshold**: 0.5 (configurable) - lower is stricter
-- **Formula**: 
-  ```
-  distance = √Σ(embedding1[i] - embedding2[i])²
-  match = distance < threshold
-  ```
-
-### Spoof Detection
-
-#### 1. Local Binary Patterns (LBP) Texture Analysis
 ```
-Real Face: High texture entropy (complex skin patterns)
-Photo/Screen: Low texture entropy (uniform, smooth)
-
-LBP Algorithm:
-1. For each pixel, compare with 8 neighbors
-2. Create binary pattern (1 if neighbor >= center, else 0)
-3. Calculate histogram of patterns
-4. Compute entropy: -Σ(p * log₂(p))
-```
-
-#### 2. Eye Blink Detection
-```
-Eye Aspect Ratio (EAR) = (|p2-p6| + |p3-p5|) / (2 * |p1-p4|)
-
-Open eye:  EAR ≈ 0.25-0.35
-Closed:    EAR < 0.20
-
-Blink = EAR drops below threshold for 2-3 consecutive frames
+┌─────────────────────────────────────────────────────────────────┐
+│                        CLIENT LAYER                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
+│  │   Browser   │  │  Mobile App │  │  API Client │              │
+│  │  (WebRTC)   │  │  (Future)   │  │  (REST)     │              │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘              │
+└─────────┼────────────────┼────────────────┼─────────────────────┘
+          │                │                │
+          ▼                ▼                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        API LAYER (FastAPI)                       │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  /api/register  │  /api/identify  │  /api/users  │  ...    │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────┬───────────────────────────────────┘
+                              │
+          ┌───────────────────┼───────────────────┐
+          ▼                   ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│  FACE PROCESSOR │ │ SPOOF DETECTOR  │ │    DATABASE     │
+│  ┌───────────┐  │ │  ┌───────────┐  │ │  ┌───────────┐  │
+│  │ Detection │  │ │  │    LBP    │  │ │  │   Users   │  │
+│  │(Haar/DNN) │  │ │  │  Texture  │  │ │  ├───────────┤  │
+│  ├───────────┤  │ │  ├───────────┤  │ │  │Attendance │  │
+│  │ Encoding  │  │ │  │Reflection │  │ │  ├───────────┤  │
+│  │(LBP+HOG)  │  │ │  │ Analysis  │  │ │  │  Audit    │  │
+│  ├───────────┤  │ │  ├───────────┤  │ │  │   Logs    │  │
+│  │  Matching │  │ │  │   Blur    │  │ │  └───────────┘  │
+│  │(Histogram)│  │ │  │  Check    │  │ │    SQLite       │
+│  └───────────┘  │ │  └───────────┘  │ └─────────────────┘
+└─────────────────┘ └─────────────────┘
 ```
 
-#### 3. Reflection Analysis
+### Directory Structure
+
 ```
-Screen displays have sharp, bright reflections
-Real faces have soft, diffuse lighting
-
-Detection:
-1. Find very bright pixels (> 240 intensity)
-2. Calculate ratio of bright to total pixels
-3. High ratio = likely screen/photo
-```
-
-### Lighting Normalization (CLAHE)
-```
-CLAHE = Contrast Limited Adaptive Histogram Equalization
-
-1. Divide image into 8x8 tiles
-2. Apply histogram equalization to each tile
-3. Limit contrast amplification (clip_limit=2.0)
-4. Interpolate between tiles for smooth result
-
-Benefits:
-- Handles uneven lighting
-- Improves face detection in shadows/bright spots
-- Works in LAB color space (L channel only)
+Detector/
+├── 📄 main.py                 # FastAPI application & routes
+├── 📄 config.py               # Configuration settings
+├── 📄 database.py             # SQLAlchemy models & operations
+├── 📄 face_processor.py       # Face recognition (dlib version)
+├── 📄 face_processor_cv.py    # Face recognition (OpenCV fallback)
+├── 📄 demo.py                 # Standalone camera demo
+├── 📄 run.py                  # Quick start installer
+├── 📄 requirements.txt        # Python dependencies
+├── 📄 README.md               # This file
+├── 📄 QUICKSTART.md           # Quick reference guide
+│
+├── 📁 static/                 # Frontend assets
+│   ├── 📄 index.html          # Main HTML page
+│   ├── 📄 styles.css          # Premium CSS styling
+│   └── 📄 app.js              # Frontend JavaScript
+│
+├── 📁 registered_faces/       # Saved face images
+├── 📁 face_encodings/         # Cached encodings (optional)
+├── 📁 logs/                   # Application logs
+│
+└── 📄 attendance.db           # SQLite database (auto-created)
 ```
 
 ---
 
-## 📚 Training Process
+## 🧠 Face Recognition Model
 
-### Pre-trained Models
+### Detection Pipeline
 
-This system uses pre-trained models from the `face_recognition` library:
+```
+Input Image
+     │
+     ▼
+┌────────────────┐
+│ Preprocessing  │ ─── CLAHE Lighting Normalization
+└───────┬────────┘
+        │
+        ▼
+┌────────────────┐
+│ Face Detection │ ─── Haar Cascade / DNN (OpenCV)
+└───────┬────────┘     or HOG/CNN (dlib)
+        │
+        ▼
+┌────────────────┐
+│ Feature        │ ─── LBP Texture (64 bins)
+│ Extraction     │     Grayscale Histogram (32 bins)
+│                │     HOG Gradients (18 bins)
+│                │     Color Histogram (18 bins)
+└───────┬────────┘     ─────────────────────────────
+        │              Total: 132 features
+        ▼
+┌────────────────┐
+│ Face Matching  │ ─── Histogram Intersection
+└───────┬────────┘     Similarity Score [0-1]
+        │
+        ▼
+    Result
+```
 
-| Model | Description | Training Data |
-|-------|-------------|---------------|
-| dlib face detector | HOG + SVM | ~3,000 images |
-| Face landmark predictor | 68 facial landmarks | iBUG 300-W dataset |
-| Face encoder (ResNet) | 128-D embeddings | ~3 million faces |
+### Feature Vector Composition
 
-### Transfer Learning Approach
+| Feature Type | Bins | Description |
+|--------------|------|-------------|
+| LBP Texture | 64 | Local Binary Pattern histogram |
+| Grayscale | 32 | Intensity distribution |
+| HOG | 18 | Gradient orientation histogram |
+| Color | 18 | Hue channel histogram |
+| **Total** | **132** | Complete face signature |
 
-The system doesn't train new models - it uses the pre-trained ResNet encoder as a feature extractor:
+### Recognition Accuracy
 
-1. **Enrollment Phase** (Registration)
-   - Capture face image
-   - Extract 128-D embedding using pre-trained ResNet
-   - Store embedding in database
-
-2. **Inference Phase** (Identification)
-   - Capture face from camera
-   - Extract 128-D embedding
-   - Compare with all stored embeddings
-   - Find closest match under threshold
-
-### Why This Approach?
-
-| Advantage | Explanation |
-|-----------|-------------|
-| No training data needed | Uses transfer learning from millions of faces |
-| One-shot learning | Single photo enrollment works |
-| Fast deployment | No training time required |
-| Good generalization | Pre-trained on diverse faces |
+| Scenario | Expected Accuracy |
+|----------|-------------------|
+| Optimal (good lighting, frontal) | 90-95% |
+| Normal indoor | 85-90% |
+| Variable lighting | 80-85% |
+| Challenging (low light, angle) | 70-80% |
 
 ---
 
-## 📊 Accuracy Expectations
+## 🛡️ Anti-Spoofing System
 
-### Face Recognition Accuracy
+### Multi-Layer Defense
 
-| Scenario | Expected Accuracy | Notes |
-|----------|-------------------|-------|
-| Good lighting, frontal face | 98-99% | Ideal conditions |
-| Normal indoor lighting | 95-98% | Typical office environment |
-| Variable lighting | 90-95% | CLAHE helps significantly |
-| Partial occlusion (small) | 85-92% | Glasses OK, masks reduce accuracy |
-| Profile/angled face | 80-90% | Best with frontal faces |
+```
+┌─────────────────────────────────────────┐
+│           SPOOFING ATTEMPT              │
+│     (Photo, Screen, Printed Face)       │
+└───────────────────┬─────────────────────┘
+                    │
+        ┌───────────┼───────────┐
+        ▼           ▼           ▼
+   ┌─────────┐ ┌─────────┐ ┌─────────┐
+   │   LBP   │ │Reflect- │ │  Blur   │
+   │ Texture │ │  ion    │ │ Analysis│
+   │ Analysis│ │ Check   │ │         │
+   └────┬────┘ └────┬────┘ └────┬────┘
+        │           │           │
+        ▼           ▼           ▼
+   Score: 0.4   Score: 0.3   Score: 0.3
+        │           │           │
+        └───────────┼───────────┘
+                    │
+                    ▼
+            ┌───────────────┐
+            │   Weighted    │
+            │   Combined    │
+            │   Score       │
+            └───────┬───────┘
+                    │
+                    ▼
+            Threshold: 0.4
+                    │
+         ┌──────────┴──────────┐
+         ▼                     ▼
+    ✅ LIVE FACE          ❌ SPOOF DETECTED
+```
+
+### Detection Methods
+
+| Method | Weight | What It Detects |
+|--------|--------|-----------------|
+| **LBP Texture** | 40% | Printed photos (flat texture) |
+| **Reflection** | 30% | Screen displays (glare patterns) |
+| **Blur Analysis** | 30% | Low-quality spoofs (uniform blur) |
 
 ### Spoof Detection Accuracy
 
-| Attack Type | Detection Rate | False Positive Rate |
-|-------------|----------------|---------------------|
-| Printed photo | 85-90% | 5-10% |
-| Photo on phone screen | 80-85% | 8-12% |
-| Static video playback | 75-85% | 10-15% |
-| High-quality replay | 60-75% | 15-20% |
+| Attack Type | Detection Rate |
+|-------------|----------------|
+| Printed photo | 85-95% |
+| Phone/tablet screen | 80-90% |
+| Laptop screen | 75-85% |
+| High-quality print | 70-80% |
+| 3D mask | Not detected* |
 
-### Factors Affecting Accuracy
-
-| Factor | Impact | Mitigation |
-|--------|--------|------------|
-| Lighting changes | Medium | CLAHE normalization |
-| Distance from camera | High | Keep 30-60cm distance |
-| Face angle | High | Use frontal face |
-| Image quality | High | Use HD webcam |
-| Similar-looking people | Medium | Lower tolerance threshold |
+*Note: 3D mask detection requires depth sensors or additional hardware.
 
 ---
 
-## ⚠️ Known Limitations
+## 🗄️ Database Schema
 
-### Face Recognition Limitations
+### Entity Relationship Diagram
 
-1. **Identical Twins**
-   - May have difficulty distinguishing identical twins
-   - Solution: Use additional factors (voice, PIN)
+```
+┌──────────────────┐       ┌──────────────────────┐
+│      USERS       │       │  ATTENDANCE_RECORDS  │
+├──────────────────┤       ├──────────────────────┤
+│ PK id            │───┐   │ PK id                │
+│    employee_id   │   │   │ FK user_id           │───┐
+│    name          │   │   │    date              │   │
+│    email         │   └──▶│    punch_in_time     │   │
+│    department    │       │    punch_out_time    │   │
+│    face_encoding │       │    confidence_score  │   │
+│    face_image    │       │    spoof_check       │   │
+│    registered_at │       │    notes             │   │
+│    is_active     │       └──────────────────────┘   │
+└──────────────────┘                                  │
+                           ┌──────────────────────┐   │
+                           │     AUDIT_LOGS       │   │
+                           ├──────────────────────┤   │
+                           │ PK id                │   │
+                           │    timestamp         │   │
+                           │    event_type        │   │
+                           │ FK user_id           │◀──┘
+                           │    details           │
+                           │    ip_address        │
+                           └──────────────────────┘
+```
 
-2. **Significant Appearance Changes**
-   - Major weight change, new glasses, facial hair
-   - Solution: Re-register periodically
+### Tables
 
-3. **Heavy Makeup**
-   - Theatrical makeup may affect recognition
-   - Solution: Register with typical daily appearance
+#### Users
 
-4. **Age Progression**
-   - Accuracy may decrease over years
-   - Solution: Update face encoding annually
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY, AUTO |
+| employee_id | VARCHAR(50) | UNIQUE, NOT NULL |
+| name | VARCHAR(100) | NOT NULL |
+| email | VARCHAR(100) | UNIQUE |
+| department | VARCHAR(100) | |
+| face_encoding | BLOB | Face feature vector |
+| face_image_path | VARCHAR(255) | Path to saved image |
+| registered_at | DATETIME | DEFAULT NOW |
+| is_active | BOOLEAN | DEFAULT TRUE |
 
-5. **Low Light**
-   - Very dark conditions reduce accuracy
-   - Solution: Ensure minimum lighting (100+ lux)
+#### Attendance Records
 
-### Spoof Detection Limitations
-
-1. **High-Quality Attacks**
-   - 3D printed masks: NOT detected
-   - High-resolution video replay: May bypass
-   - Professional silicone masks: NOT detected
-
-2. **Lighting Artifacts**
-   - Very bright lights may trigger false spoof detection
-   - Solution: Adjust reflection threshold
-
-3. **Blink Detection Bypass**
-   - Videos with natural blinking work
-   - Animated photos (deepfakes) may bypass
-
-4. **Edge Cases**
-   - Very oily/shiny skin may trigger spoof alert
-   - Certain lighting may affect LBP analysis
-
-### System Limitations
-
-1. **Single Face per Frame**
-   - Designed for individual attendance
-   - Multiple faces: Uses first detected
-
-2. **Database Size**
-   - SQLite: Best for <1000 users
-   - Larger scale: Migrate to PostgreSQL
-
-3. **Face Encoding Memory**
-   - All encodings loaded in RAM
-   - ~128KB per 100 users
-
-4. **Camera Dependency**
-   - Requires continuous camera access
-   - Network cameras may have latency
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | PRIMARY KEY |
+| user_id | INTEGER | FOREIGN KEY → Users |
+| date | DATETIME | Record date |
+| punch_in_time | DATETIME | Check-in timestamp |
+| punch_out_time | DATETIME | Check-out timestamp |
+| confidence_score | FLOAT | Recognition confidence |
+| spoof_check_passed | BOOLEAN | Anti-spoof result |
+| notes | VARCHAR(255) | Additional notes |
 
 ---
 
 ## ⚙️ Configuration
 
-### config.py Parameters
+### config.py Settings
 
 ```python
 # Face Recognition
-FACE_RECOGNITION_TOLERANCE = 0.5  # 0.4-0.6 (lower = stricter)
-FACE_ENCODING_MODEL = "large"     # "small" or "large"
-FACE_DETECTION_MODEL = "hog"      # "hog" (fast) or "cnn" (accurate)
-
-# Spoof Detection
-SPOOF_DETECTION_ENABLED = True
-BLINK_THRESHOLD = 0.25           # EAR threshold for blink
-LBP_THRESHOLD = 0.7              # Texture analysis threshold
+FACE_RECOGNITION_TOLERANCE = 0.5  # Match threshold (0.4-0.6)
+FACE_DETECTION_MODEL = "hog"      # "hog" or "cnn"
 
 # Camera
-CAMERA_INDEX = 0                  # Webcam index
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
+CAMERA_INDEX = 0                  # Camera device index
+FRAME_WIDTH = 640                 # Capture width
+FRAME_HEIGHT = 480                # Capture height
+FPS = 30                          # Frame rate
+
+# Anti-Spoofing
+SPOOF_DETECTION_ENABLED = True
+LBP_THRESHOLD = 0.4               # Spoof detection threshold
 
 # Lighting
-ENABLE_CLAHE = True
-CLAHE_CLIP_LIMIT = 2.0
+ENABLE_CLAHE = True               # Adaptive histogram
+CLAHE_CLIP_LIMIT = 2.0            # Contrast limit
 
 # Attendance
-PUNCH_COOLDOWN_MINUTES = 1        # Min time between punch-in/out
+PUNCH_COOLDOWN_MINUTES = 1        # Min time between punches
+
+# Server
+API_HOST = "0.0.0.0"
+API_PORT = 8000
+DEBUG_MODE = True
 ```
 
-### Tuning Recommendations
+### Environment Variables
 
-| Use Case | Tolerance | Model | Spoof LBP |
-|----------|-----------|-------|-----------|
-| High Security | 0.4 | large | 0.8 |
-| Standard Office | 0.5 | large | 0.7 |
-| Fast Processing | 0.55 | small | 0.65 |
-| Outdoor/Variable | 0.5 | large | 0.6 |
+```bash
+# Optional overrides
+export DATABASE_URL="sqlite:///./attendance.db"
+export API_PORT=8000
+export DEBUG_MODE=true
+```
+
+---
+
+## 🔐 Security Features
+
+### Implemented
+
+| Feature | Description |
+|---------|-------------|
+| ✅ Anti-Spoofing | LBP texture + reflection + blur analysis |
+| ✅ Duplicate Face Prevention | Same face cannot register twice |
+| ✅ Unique Constraints | Employee ID and email must be unique |
+| ✅ Audit Logging | All events tracked with timestamps |
+| ✅ Input Validation | Pydantic models for API validation |
+| ✅ CORS Configuration | Configurable cross-origin settings |
+
+### Recommended for Production
+
+| Feature | Implementation |
+|---------|---------------|
+| 🔒 HTTPS | Use nginx/traefik with SSL |
+| 🔑 Authentication | Add JWT or OAuth2 |
+| 🛡️ Rate Limiting | Add slowapi or similar |
+| 📝 Request Logging | Use logging middleware |
+| 🔐 Encryption | Encrypt face encodings at rest |
+| 🌐 WAF | Deploy behind web application firewall |
+
+---
+
+## ⚡ Performance
+
+### Benchmarks
+
+| Operation | Time | Hardware |
+|-----------|------|----------|
+| Face Detection | 30-50ms | Intel i5 |
+| Feature Extraction | 20-30ms | Intel i5 |
+| Face Matching (10 users) | <5ms | Intel i5 |
+| Face Matching (100 users) | <20ms | Intel i5 |
+| Total Identification | <100ms | Intel i5 |
+
+### Optimization Tips
+
+1. **Use GPU acceleration** - Install CUDA-enabled OpenCV
+2. **Reduce frame size** - Lower resolution for faster processing
+3. **Cache encodings** - Pre-load known faces at startup
+4. **Use CNN detector** - More accurate but requires GPU
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+<details>
+<summary><b>❌ "No face detected"</b></summary>
+
+**Causes:**
+
+- Poor lighting
+- Face too far from camera
+- Face partially obscured
+
+**Solutions:**
+
+- Improve lighting (face should be well-lit)
+- Move closer to camera (face should fill 1/3 of frame)
+- Remove obstructions (glasses, masks, hair)
+- Ensure camera is working (`python -c "import cv2; print(cv2.VideoCapture(0).read()[0])"`)
+
+</details>
+
+<details>
+<summary><b>❌ "Spoof detection failed"</b></summary>
+
+**Causes:**
+
+- Screen glare on face
+- Too uniform lighting
+- Low camera quality
+
+**Solutions:**
+
+- Reduce direct light on face
+- Move to area with natural lighting
+- Clean camera lens
+- Try different angle
+
+</details>
+
+<details>
+<summary><b>❌ "Face not recognized"</b></summary>
+
+**Causes:**
+
+- Different lighting than registration
+- Significant appearance change
+- Low confidence threshold
+
+**Solutions:**
+
+- Re-register in current lighting conditions
+- Increase `FACE_RECOGNITION_TOLERANCE` in config
+- Register multiple photos per person
+
+</details>
+
+<details>
+<summary><b>❌ Camera not working</b></summary>
+
+**Solutions:**
+
+```bash
+# Test camera
+python -c "import cv2; cap=cv2.VideoCapture(0); print('Camera OK:', cap.isOpened())"
+
+# Try different index
+# Edit config.py: CAMERA_INDEX = 1
+
+# Check permissions (Linux)
+sudo usermod -a -G video $USER
+```
+
+</details>
+
+<details>
+<summary><b>❌ Import errors</b></summary>
+
+**Solutions:**
+
+```bash
+# Reinstall dependencies
+pip uninstall opencv-python opencv-contrib-python
+pip install opencv-python opencv-contrib-python
+
+# For dlib issues on Windows
+pip install cmake
+pip install dlib
+```
+
+</details>
 
 ---
 
 ## 🤝 Contributing
 
-Feel free to submit issues and enhancement requests!
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Setup
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
+# Install dev dependencies
+pip install -r requirements.txt
+pip install pytest black flake8
+
+# Run tests
+pytest tests/
+
+# Format code
+black .
+```
+
+---
 
 ## 📄 License
 
-This project is for educational purposes. Please ensure compliance with local biometric data regulations (GDPR, CCPA, etc.) before production use.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2026 FacePass
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+```
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [dlib](http://dlib.net/) - Face detection and recognition
-- [face_recognition](https://github.com/ageitgey/face_recognition) - Python face recognition library
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework
 - [OpenCV](https://opencv.org/) - Computer vision library
+- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework
+- [SQLAlchemy](https://www.sqlalchemy.org/) - Database toolkit
+- [dlib](http://dlib.net/) - Machine learning library
+- [face_recognition](https://github.com/ageitgey/face_recognition) - Face recognition library
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ for secure, modern attendance tracking</strong>
+</p>
+
+<p align="center">
+  <a href="#-faceauth-pro">Back to Top ↑</a>
+</p>

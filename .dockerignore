@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Database
+*.db
+
+# Registered faces (user data)
+registered_faces/
+face_encodings/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+
+# Test files
+tests/
+*.test.py
+
+# Build
+dist/
+build/
+*.egg-info/

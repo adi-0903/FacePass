@@ -39,8 +39,8 @@ except ImportError:
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Face Authentication Attendance System",
-    description="Real-time face recognition for employee attendance tracking",
+    title="FacePass - Smart Face Authentication",
+    description="Your Face, Your Access. Real-time face recognition for employee attendance tracking.",
     version="1.0.0"
 )
 
@@ -101,7 +101,7 @@ def load_known_faces():
 async def startup_event():
     """Initialize on startup"""
     load_known_faces()
-    print("Face Authentication System Started")
+    print("FacePass Started")
 
 
 # ============ API Endpoints ============
@@ -536,7 +536,7 @@ app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 
 
 if __name__ == "__main__":
-    print("Starting Face Authentication Attendance System...")
+    print("Starting FacePass...")
     print(f"Server running at http://localhost:{config.API_PORT}")
     uvicorn.run(
         "main:app",
